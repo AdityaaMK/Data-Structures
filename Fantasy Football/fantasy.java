@@ -5,7 +5,7 @@ import java.util.*;
 public class fantasy {
 
     public static void main(String[] args) {
-        fantasy app = new fantasy();
+        new fantasy();
     }
 
     public fantasy() {
