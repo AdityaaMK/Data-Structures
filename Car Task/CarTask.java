@@ -127,7 +127,7 @@ class Car implements Comparable<Car> {
     }
 
     public String toString() {
-        return String.format("%-10d %-7d %-15d %-7d %-10d %-17d %-10d %-15d\n", id, mpg, engineSize, hp, weight, accel,
+        return String.format("%-10d %-7d %-15d %-7d %-10d %-17d %-10d %-15d", id, mpg, engineSize, hp, weight, accel,
                 origin, cylinders);
     }
 }
