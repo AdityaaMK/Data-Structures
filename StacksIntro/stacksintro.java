@@ -79,45 +79,40 @@ public class stacksintro {
             System.out.println("file not found");
         }
 
-        // System.out.println("Male Characters");
-        // System.out.println(String.format("%s%50s", "Name", "HomeWorld"));
-        // while (!maleCharacters.empty()) {
-        // System.out.println(maleCharacters.pop());
-        // }
+        System.out.println("Male Characters");
+        System.out.println(String.format("%s%50s", "Name", "HomeWorld"));
+        while (!maleCharacters.empty()) {
+            System.out.println(maleCharacters.pop());
+        }
 
-        // System.out.println("\nFemale Characters");
-        // System.out.println(String.format("%s%50s", "Name", "HomeWorld"));
-        // while (!femaleCharacters.empty()) {
-        // System.out.println(femaleCharacters.pop());
-        // }
+        System.out.println("\nFemale Characters");
+        System.out.println(String.format("%s%50s", "Name", "HomeWorld"));
+        while (!femaleCharacters.empty()) {
+            System.out.println(femaleCharacters.pop());
+        }
 
-        // System.out.println("\nDroids");
-        // System.out.println(String.format("%s%50s", "Name", "HomeWorld"));
-        // while (!droids.empty()) {
-        // System.out.println(droids.pop());
-        // }
+        System.out.println("\nDroids");
+        System.out.println(String.format("%s%50s", "Name", "HomeWorld"));
+        while (!droids.empty()) {
+            System.out.println(droids.pop());
+        }
 
-        // System.out.println("\nAges");
-        // System.out.println(String.format("%s%50s%25s", "Name", "HomeWorld", "Birth
-        // Year (BBY)"));
-        // while (!validYears.empty()) {
-        // StarWarsCharacter temp = validYears.pop();
-        // if (!temp.homeWorld.equals("NA"))
-        // if (temp.birthYear.contains("."))
-        // System.out.println(String.format("%-45s%-18s%s", temp.name, temp.homeWorld,
-        // temp.birthYear));
-        // else
-        // System.out.println(String.format("%-45s%-18s%s", temp.name, temp.homeWorld,
-        // temp.birthYear + ".0"));
-        // else {
-        // if (temp.birthYear.contains("."))
-        // System.out.println(String.format("%-45s%-18s%s", temp.name, "Unknown",
-        // temp.birthYear));
-        // else
-        // System.out.println(String.format("%-45s%-18s%s", temp.name, "Unknown",
-        // temp.birthYear + ".0"));
-        // }
-        // }
+        System.out.println("\nAges");
+        System.out.println(String.format("%s%50s%25s", "Name", "HomeWorld", "Birth Year (BBY)"));
+        while (!validYears.empty()) {
+            StarWarsCharacter temp = validYears.pop();
+            if (!temp.homeWorld.equals("NA"))
+                if (temp.birthYear.contains("."))
+                    System.out.println(String.format("%-45s%-18s%s", temp.name, temp.homeWorld, temp.birthYear));
+                else
+                    System.out.println(String.format("%-45s%-18s%s", temp.name, temp.homeWorld, temp.birthYear + ".0"));
+            else {
+                if (temp.birthYear.contains("."))
+                    System.out.println(String.format("%-45s%-18s%s", temp.name, "Unknown", temp.birthYear));
+                else
+                    System.out.println(String.format("%-45s%-18s%s", temp.name, "Unknown", temp.birthYear + ".0"));
+            }
+        }
 
     }
 

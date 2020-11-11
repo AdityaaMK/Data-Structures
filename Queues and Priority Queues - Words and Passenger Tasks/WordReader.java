@@ -8,9 +8,9 @@ public class WordReader {
     public static void main(String[] args) {
         taskOne();
         System.out.println("\n-------------------------------------------------------------\n");
-        taskTwo2();
+        taskTwo();
         System.out.println("\n-------------------------------------------------------------\n");
-        taskTwo3();
+        taskThree();
 
     }
 
@@ -26,11 +26,9 @@ public class WordReader {
             String[] words = Files.readAllLines(file.toPath()).get(0).split("\\W+");
 
             for (String word : words) {
-                Word w = new Word(word);
-                DescendingWord w2 = new DescendingWord(word);
-                q.add(w);
-                pq.add(w);
-                reverse.add(w2);
+                q.add(new Word(word));
+                pq.add(new Word(word));
+                reverse.add(new DescendingWord(word));
             }
             System.out.printf("%-20s %-20s %s\n", "Original", "Sorted", "Reversed");
 
@@ -42,7 +40,7 @@ public class WordReader {
         }
     }
 
-    public static void taskTwo2() {
+    public static void taskTwo() {
         try {
             Queue<Passenger> q = new LinkedList<>();
 
@@ -61,7 +59,7 @@ public class WordReader {
 
     }
 
-    public static void taskTwo3() {
+    public static void taskThree() {
         try {
             PriorityQueue<Passenger> pq = new PriorityQueue<>();
 
@@ -172,7 +170,7 @@ class Passenger implements Comparable<Passenger> {
         int b = other.etdCalc();
         if ((a > 60 && b > 60) || a == b)
             return 0;
-        return (a - b) / Math.abs(a - b);
+        return (a - b);
     }
 
 }
