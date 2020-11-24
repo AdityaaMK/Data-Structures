@@ -161,21 +161,6 @@ public class SuperList<E> {
         return size;
     }
 
-    // public SuperList<E> copy() {
-    // SuperList<E> duplicate = new SuperList<>();
-    // return duplicate.addAll(this);
-    // }
-
-    // public SuperList<E> addAll(SuperList<E> other) {
-    // for (E a : other)
-    // add(a);
-    // return this;
-    // }
-
-    public static interface ListFilter<E> {
-        public boolean filter(E obj);
-    }
-
     public class ListNode<E> {
 
         private E value;
