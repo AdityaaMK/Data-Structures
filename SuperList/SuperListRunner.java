@@ -76,7 +76,7 @@ public class SuperListRunner {
 		if (arrayList.size() % 2 == 1) {
 			median = arrayList.get(arrayList.size() / 2);
 		} else {
-]			median = ((double) arrayList.get(arrayList.size() / 2) + (double) arrayList.get(arrayList.size() / 2 - 1))
+			median = ((double) arrayList.get(arrayList.size() / 2) + (double) arrayList.get(arrayList.size() / 2 - 1))
 					/ 2;
 		}
 
