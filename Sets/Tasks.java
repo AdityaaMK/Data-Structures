@@ -66,7 +66,7 @@ public class Tasks {
     public static <E> HashSet<E> filter(Filter<E> filter, HashSet<E> set) {
         HashSet<E> newSet = new HashSet<>();
         for (E val : set) {
-            if (filter.apply(vals))
+            if (filter.apply(val))
                 newSet.add(val);
         }
         return newSet;
