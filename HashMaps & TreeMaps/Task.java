@@ -24,47 +24,48 @@ public class Task {
 
             Iterator<Integer> keys = map.keySet().iterator();
             Iterator<Integer> keys2 = map.keySet().iterator();
-            Iterator<Integer> keys3 = map.keySet().iterator();
+            Iterator entrySet = map.entrySet().iterator();
             Iterator<Integer> keys4 = map.keySet().iterator();
             System.out.print("{");
             while (keys.hasNext()) {
                 int key = keys.next();
-                System.out.print(key + "=[");
-                PriorityQueue<Bowler> temp = map.get(key);
-                PriorityQueue<Bowler> temp2 = new PriorityQueue<>();
-                temp2.addAll(temp); // to preserve values in map when polling
-                while (!temp2.isEmpty()) {
-                    if (temp2.size() != 1)
-                        System.out.print(temp2.poll() + ", ");
-                    else if (keys.hasNext())
-                        System.out.print(temp2.poll() + "], ");
-                    else
-                        System.out.print(temp2.poll() + "]");
-                }
+                System.out.print(key + "=");
+                if (keys.hasNext())
+                    System.out.print(map.get(key) + ", ");
+                else
+                    System.out.println(map.get(key) + "}");
+                // PriorityQueue<Bowler> temp = new PriorityQueue<>();
+                // temp.addAll(map.get(key));
+                // while (!temp.isEmpty()) {
+                // if (temp.size() != 1)
+                // System.out.print(temp.poll() + ", ");
+                // else if (keys.hasNext())
+                // System.out.print(temp.poll() + "], ");
+                // else
+                // System.out.print(temp.poll() + "]");
+                // }
             }
-            System.out.print("}\n");
             System.out.println("+++++++++++++++++++++++++++++++++++");
             System.out.println("++++++++++++++++KEYS+++++++++++++++");
             System.out.println("+++++++++++++++++++++++++++++++++++");
             while (keys2.hasNext()) {
-                int key = keys2.next();
-                System.out.println(key);
+                System.out.println(keys2.next());
             }
             System.out.println("+++++++++++++++++++++++++++++++++++");
             System.out.println("+++++++++++++ENTRY SET+++++++++++++");
             System.out.println("+++++++++++++++++++++++++++++++++++");
-            while (keys3.hasNext()) {
-                int key = keys3.next();
-                System.out.print(key + "=[");
-                PriorityQueue<Bowler> temp = map.get(key);
-                PriorityQueue<Bowler> temp2 = new PriorityQueue<>();
-                temp2.addAll(temp);
-                while (!temp2.isEmpty()) {
-                    if (temp2.size() != 1)
-                        System.out.print(temp2.poll() + ", ");
-                    else
-                        System.out.print(temp2.poll() + "]\n");
-                }
+            while (entrySet.hasNext()) {
+                System.out.println(entrySet.next());
+                // int key = keys3.next();
+                // System.out.print(key + "=[");
+                // PriorityQueue<Bowler> temp = new PriorityQueue<>();
+                // temp.addAll(map.get(key));
+                // while (!temp.isEmpty()) {
+                // if (temp.size() != 1)
+                // System.out.print(temp.poll() + ", ");
+                // else
+                // System.out.print(temp.poll() + "]\n");
+                // }
             }
             System.out.println("+++++++++++++++++++++++++++++++++++");
             System.out.println("+++++++++++++++VALUES++++++++++++++");
@@ -72,7 +73,8 @@ public class Task {
             while (keys4.hasNext()) {
                 int key = keys4.next();
                 System.out.print("[");
-                PriorityQueue<Bowler> temp = map.get(key);
+                PriorityQueue<Bowler> temp = new PriorityQueue<>();
+                temp.addAll(map.get(key));
                 while (!temp.isEmpty()) {
                     if (temp.size() != 1)
                         System.out.print(temp.poll() + ", ");
