@@ -12,14 +12,18 @@ public class Task {
             BufferedReader input = new BufferedReader(new FileReader("BowlingData.txt"));
             while ((line = input.readLine()) != null) {
                 String[] data = line.split("\\s+");
-                PriorityQueue<Bowler> temp = new PriorityQueue<>();
-                if (!map.containsKey(Integer.parseInt(data[2]))) {
-                    temp.add(new Bowler(data[0], data[1], Integer.parseInt(data[2])));
-                } else {
-                    temp = map.get(Integer.parseInt(data[2]));
-                    temp.add(new Bowler(data[0], data[1], Integer.parseInt(data[2])));
-                }
-                map.put(Integer.parseInt(data[2]), temp);
+                // PriorityQueue<Bowler> temp = new PriorityQueue<>();
+                // if (!map.containsKey(Integer.parseInt(data[2]))) {
+                // temp.add(new Bowler(data[0], data[1], Integer.parseInt(data[2])));
+                // } else {
+                // temp = map.get(Integer.parseInt(data[2]));
+                // temp.add(new Bowler(data[0], data[1], Integer.parseInt(data[2])));
+                // }
+                // map.put(Integer.parseInt(data[2]), temp);
+                int score = Integer.parseInt(data[2]);
+                if (!map.containsKey(score))
+                    map.put(score, new PriorityQueue<Bowler>());
+                map.get(score).add(new Bowler(data[0], data[1], Integer.parseInt(data[2])));
             }
 
             Iterator<Integer> keys = map.keySet().iterator();
