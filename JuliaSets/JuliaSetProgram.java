@@ -2,18 +2,27 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class JuliaSetProgram extends JPanel implements AdjustmentListener, MouseListener {
+public class JuliaSetProgram extends JPanel implements AdjustmentListener, MouseListener, ActionListener {
 
     /**
      *
@@ -21,20 +30,27 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
     private static final long serialVersionUID = 1L;
     JFrame frame;
     double a, b, zoom;
+    int version;
     float hue = 0.66f;
     float imageHue = 1.0f;
     float sat = 1.0f;
     float bright = 1.0f;
     float maxIter = 300.0f;
     int pixelSize = 1;
-    JScrollBar aBar, bBar, zoomBar, hueBar, imageHueBar, satBar, brightBar;
-    JPanel scrollPanel, labelPanel, bigPanel, huePanel, imageHuePanel, satPanel, brightPanel;
-    JLabel aLabel, bLabel, zoomLabel, hueLabel, satLabel, imageHueLabel, brightLabel;
+    JScrollBar aBar, bBar, zoomBar, hueBar, imageHueBar, satBar, brightBar, versionBar;
+    JPanel scrollPanel, labelPanel, bigPanel, huePanel, imageHuePanel, satPanel, brightPanel, buttonPanel, versionPanel;
+    JLabel aLabel, bLabel, zoomLabel, hueLabel, satLabel, imageHueLabel, brightLabel, versionLabel;
+    JButton clear, save;
+    JFileChooser fileChooser;
+    BufferedImage image;
 
     public JuliaSetProgram() {
         frame = new JFrame("Julia Set Program");
         frame.add(this);
         frame.setSize(1000, 600);
+
+        String currDir = System.getProperty("user.dir");
+        fileChooser = new JFileChooser(currDir);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // orientation,starting value,doodad size,min value,max value
@@ -74,6 +90,11 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
         zoomBar.addMouseListener(this);
         zoomBar.addAdjustmentListener(this);
 
+        versionBar = new JScrollBar(JScrollBar.HORIZONTAL, 1, 0, 1, 4);
+        version = versionBar.getValue();
+        versionBar.addMouseListener(this);
+        versionBar.addAdjustmentListener(this);
+
         aLabel = new JLabel("a");
         bLabel = new JLabel("bi");
         hueLabel = new JLabel("hue");
@@ -81,8 +102,9 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
         satLabel = new JLabel("saturation");
         brightLabel = new JLabel("brightness");
         zoomLabel = new JLabel("zoom");
+        versionLabel = new JLabel("version");
 
-        GridLayout grid = new GridLayout(7, 1);
+        GridLayout grid = new GridLayout(8, 1);
         labelPanel = new JPanel();
         labelPanel.setLayout(grid);
         labelPanel.add(aLabel);
@@ -92,7 +114,7 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
         labelPanel.add(satLabel);
         labelPanel.add(brightLabel);
         labelPanel.add(zoomLabel);
-
+        labelPanel.add(versionLabel);
         scrollPanel = new JPanel();
         scrollPanel.setLayout(grid);
         scrollPanel.add(aBar);
@@ -102,11 +124,22 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
         scrollPanel.add(satBar);
         scrollPanel.add(brightBar);
         scrollPanel.add(zoomBar);
+        scrollPanel.add(versionBar);
+
+        clear = new JButton("Reset");
+        save = new JButton("Save");
+        clear.addActionListener(this);
+        save.addActionListener(this);
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(2, 1));
+        buttonPanel.add(clear);
+        buttonPanel.add(save);
 
         bigPanel = new JPanel();
         bigPanel.setLayout(new BorderLayout());
         bigPanel.add(labelPanel, BorderLayout.WEST);
         bigPanel.add(scrollPanel, BorderLayout.CENTER);
+        bigPanel.add(buttonPanel, BorderLayout.EAST);
 
         frame.add(bigPanel, BorderLayout.SOUTH);
 
@@ -123,18 +156,44 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
         int width = frame.getWidth();
         int height = frame.getHeight();
 
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         for (int x = 0; x < width; x += pixelSize) {
             for (int y = 0; y < height; y += pixelSize) {
                 float i = maxIter;
                 double zx = 1.5 * (x - width / 2.0) / (.5 * zoom * width);
                 double zy = (y - height / 2.0) / (.5 * zoom * height);
-                while (zx * zx + zy * zy < 6 && i > 0) {
-                    double temp = zx * zx - zy * zy + a;
-                    zy = 2.0 * zx * zy + b;
-                    zx = temp;
-                    i--;
+                switch (version) {
+                    case 1:
+                        while (zx * zx + zy * zy < 6 && i > 0) {
+                            double temp = zx * zx - zy * zy + a;
+                            zy = 2.0 * zx * zy + b;
+                            zx = temp;
+                            i--;
+                        }
+                        break;
+                    case 2:
+                        while (zx + zy * zy < 6 && i > 0) {
+                            double temp = zx - zy * zy + a;
+                            zy = 2.0 * zx * zy + b;
+                            zx = temp;
+                            i--;
+                        }
+                        break;
+                    case 3:
+                        while (zx * zx + zy < 6 && i > 0) {
+                            double temp = zx * zx - zy + a;
+                            zy = 2.0 * zx * zy + b;
+                            zx = temp;
+                            i--;
+                        }
+                    case 4:
+                        while (zx + zy < 6 && i > 0) {
+                            double temp = zx - zy + a;
+                            zy = 2.0 * zx * zy + b;
+                            zx = temp;
+                            i--;
+                        }
                 }
                 int c;
                 if (i > 0) {
@@ -170,6 +229,9 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
         } else if (e.getSource() == brightBar) {
             bright = brightBar.getValue() / 1000.0f;
             brightLabel.setText("brightness: " + bright + "\t\t");
+        } else if (e.getSource() == versionBar) {
+            version = versionBar.getValue();
+            versionLabel.setText("version: " + version + "\t\t");
         }
         repaint();
     }
@@ -193,6 +255,43 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
 
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    public void saveImage() {
+        if (image != null) // juliaImage is the BufferedImage I declared globally (and used in
+                           // the drawJulia method)
+        {
+            FileFilter filter = new FileNameExtensionFilter("*.png", "png");
+            fileChooser.setFileFilter(filter);
+            if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                try {
+                    String st = file.getAbsolutePath();
+                    if (st.indexOf(".png") >= 0)
+                        st = st.substring(0, st.length() - 4);
+                    ImageIO.write(image, "png", new File(st + ".png"));
+                } catch (IOException e) {
+                }
+
+            }
+        }
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == clear) {
+            System.out.println("test");
+            a = b = 0;
+            zoom = 1;
+            hue = 0.66f;
+            imageHue = 1.0f;
+            sat = 1.0f;
+            bright = 1.0f;
+            maxIter = 300.0f;
+            repaint();
+        }
+        if (e.getSource() == save) {
+            saveImage();
+        }
     }
 
     public static void main(String[] args) {
