@@ -302,7 +302,6 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == clear) {
-            System.out.println("test");
             a = b = 0;
             zoom = 1;
             hue = 0.66f;
@@ -318,7 +317,7 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
     }
 
     public static void main(String[] args) {
-        JuliaSetProgram app = new JuliaSetProgram();
+        app = new JuliaSetProgram();
     }
 
 }
