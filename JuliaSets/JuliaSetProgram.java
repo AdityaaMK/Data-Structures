@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -29,17 +30,16 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
      */
     private static final long serialVersionUID = 1L;
     JFrame frame;
-    double a, b, zoom;
+    double a, b, zoom, radius;
     int version;
-    float hue = 0.66f;
-    float imageHue = 1.0f;
-    float sat = 1.0f;
-    float bright = 1.0f;
+    float hue, imageHue, sat, bright;
     float maxIter = 300.0f;
     int pixelSize = 1;
-    JScrollBar aBar, bBar, zoomBar, hueBar, imageHueBar, satBar, brightBar, versionBar;
-    JPanel scrollPanel, labelPanel, bigPanel, huePanel, imageHuePanel, satPanel, brightPanel, buttonPanel, versionPanel;
-    JLabel aLabel, bLabel, zoomLabel, hueLabel, satLabel, imageHueLabel, brightLabel, versionLabel;
+    JScrollPane juliaPane;
+    JScrollBar aBar, bBar, zoomBar, hueBar, imageHueBar, satBar, brightBar, versionBar, radiusBar;
+    JPanel scrollPanel, labelPanel, bigPanel, huePanel, imageHuePanel, satPanel, brightPanel, buttonPanel, versionPanel,
+            radiusPanel;
+    JLabel aLabel, bLabel, zoomLabel, hueLabel, satLabel, imageHueLabel, brightLabel, versionLabel, radiusLabel;
     JButton clear, save;
     JFileChooser fileChooser;
     BufferedImage image;
@@ -48,13 +48,14 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
         frame = new JFrame("Julia Set Program");
         frame.add(this);
         frame.setSize(1000, 600);
+        // this.setLayout(new FlowLayout());
 
         String currDir = System.getProperty("user.dir");
         fileChooser = new JFileChooser(currDir);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // orientation,starting value,doodad size,min value,max value
 
+        // orientation,starting value,doodad size,min value,max value
         aBar = new JScrollBar(JScrollBar.HORIZONTAL, 0, 0, -2000, 2000);
         a = aBar.getValue() / 1000.0;
         aBar.addMouseListener(this);
@@ -95,6 +96,11 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
         versionBar.addMouseListener(this);
         versionBar.addAdjustmentListener(this);
 
+        radiusBar = new JScrollBar(JScrollBar.HORIZONTAL, 60, 0, 1, 60);
+        radius = radiusBar.getValue();
+        radiusBar.addMouseListener(this);
+        radiusBar.addAdjustmentListener(this);
+
         aLabel = new JLabel("a");
         bLabel = new JLabel("bi");
         hueLabel = new JLabel("hue");
@@ -103,8 +109,9 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
         brightLabel = new JLabel("brightness");
         zoomLabel = new JLabel("zoom");
         versionLabel = new JLabel("version");
+        radiusLabel = new JLabel("radius");
 
-        GridLayout grid = new GridLayout(8, 1);
+        GridLayout grid = new GridLayout(9, 1);
         labelPanel = new JPanel();
         labelPanel.setLayout(grid);
         labelPanel.add(aLabel);
@@ -115,6 +122,7 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
         labelPanel.add(brightLabel);
         labelPanel.add(zoomLabel);
         labelPanel.add(versionLabel);
+        labelPanel.add(radiusLabel);
         scrollPanel = new JPanel();
         scrollPanel.setLayout(grid);
         scrollPanel.add(aBar);
@@ -125,6 +133,7 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
         scrollPanel.add(brightBar);
         scrollPanel.add(zoomBar);
         scrollPanel.add(versionBar);
+        scrollPanel.add(radiusBar);
 
         clear = new JButton("Reset");
         save = new JButton("Save");
@@ -142,6 +151,17 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
         bigPanel.add(buttonPanel, BorderLayout.EAST);
 
         frame.add(bigPanel, BorderLayout.SOUTH);
+
+        // juliaPane = new JScrollPane(this, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+        // JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+        // this.setPreferredSize(new Dimension(frame.getWidth() * 2, frame.getHeight() *
+        // 2));
+
+        // juliaPane.getVerticalScrollBar().addMouseListener(this);
+        // juliaPane.getHorizontalScrollBar().addMouseListener(this);
+
+        // frame.add(juliaPane, BorderLayout.CENTER);
 
         frame.setVisible(true);
     }
@@ -165,7 +185,7 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
                 double zy = (y - height / 2.0) / (.5 * zoom * height);
                 switch (version) {
                     case 1:
-                        while (zx * zx + zy * zy < 6 && i > 0) {
+                        while (zx * zx + zy * zy < radius && i > 0) {
                             double temp = zx * zx - zy * zy + a;
                             zy = 2.0 * zx * zy + b;
                             zx = temp;
@@ -173,7 +193,7 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
                         }
                         break;
                     case 2:
-                        while (zx + zy * zy < 6 && i > 0) {
+                        while (zx + zy * zy < radius && i > 0) {
                             double temp = zx - zy * zy + a;
                             zy = 2.0 * zx * zy + b;
                             zx = temp;
@@ -181,14 +201,14 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
                         }
                         break;
                     case 3:
-                        while (zx * zx + zy < 6 && i > 0) {
+                        while (zx * zx + zy < radius && i > 0) {
                             double temp = zx * zx - zy + a;
                             zy = 2.0 * zx * zy + b;
                             zx = temp;
                             i--;
                         }
                     case 4:
-                        while (zx + zy < 6 && i > 0) {
+                        while (zx + zy < radius && i > 0) {
                             double temp = zx - zy + a;
                             zy = 2.0 * zx * zy + b;
                             zx = temp;
@@ -232,6 +252,9 @@ public class JuliaSetProgram extends JPanel implements AdjustmentListener, Mouse
         } else if (e.getSource() == versionBar) {
             version = versionBar.getValue();
             versionLabel.setText("version: " + version + "\t\t");
+        } else if (e.getSource() == radiusBar) {
+            radius = radiusBar.getValue() / 10.0;
+            radiusLabel.setText("radius: " + radius + "\t\t");
         }
         repaint();
     }
