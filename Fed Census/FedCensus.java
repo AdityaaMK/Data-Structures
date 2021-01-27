@@ -163,8 +163,8 @@ public class FedCensus {
     public static void jobRentCorrelationMap(ArrayList<Citizen> citizens) {
         TreeMap<String, HashMap<String, HashSet<Double>>> map = new TreeMap<>();
         for (Citizen citizen : citizens) {
-            if (citizen.getOccupation() == null || citizen.getOccupation().equals(".")
-                    || citizen.getMaritalStatus() == null || citizen.getPropertyValue() == -1)
+            if (citizen.getOccupation() == null || citizen.getOccupation().equals(".") || citizen.getRenting() == null
+                    || citizen.getPropertyValue() == -1)
                 continue;
             map.putIfAbsent(citizen.getOccupation(), new HashMap<>());
             map.get(citizen.getOccupation()).putIfAbsent(citizen.getRenting(), new HashSet<>());
