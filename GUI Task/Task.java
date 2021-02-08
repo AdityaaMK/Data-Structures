@@ -290,8 +290,8 @@ public class Task extends JPanel implements ActionListener {
             menu.add(resetBtn);
             frame.add(bigPanel, BorderLayout.NORTH);
             textArea.setText(null);
-            textArea.setBackground(bgColorArr[0]);
-            textArea.setForeground(textColorArr[0]);
+            textArea.setBackground(Color.WHITE);
+            textArea.setForeground(Color.BLACK);
             Font temp = new Font(fontNames[0], Font.PLAIN, fontSizeArr[0]);
             textArea.setFont(temp);
             northBtn.setBorder(new LineBorder(outlineColorArr[0]));
