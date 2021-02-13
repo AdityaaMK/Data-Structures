@@ -5,12 +5,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Task extends JPanel implements ActionListener {
+public class Task implements ActionListener {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
     JFrame frame;
     JPanel btnPanel, bigPanel;
     JMenuBar menu;
@@ -216,33 +212,35 @@ public class Task extends JPanel implements ActionListener {
             if (e.getSource() == fontOptions[x]) {
                 currFont = new Font(allFonts[x].getName(), Font.PLAIN, currFontSize);
                 textArea.setFont(currFont);
-                northBtn.setFont(currFont);
-                eastBtn.setFont(currFont);
-                westBtn.setFont(currFont);
-                southBtn.setFont(currFont);
-                fontOptionMenu.setFont(currFont);
-                fontSizeMenu.setFont(currFont);
-                textColorMenu.setFont(currFont);
-                bgColorMenu.setFont(currFont);
-                btnOutlineColorMenu.setFont(currFont);
-                resetBtn.setFont(currFont);
+                Font defFont = new Font(allFonts[x].getName(), Font.PLAIN, 14);
+                northBtn.setFont(defFont);
+                eastBtn.setFont(defFont);
+                westBtn.setFont(defFont);
+                southBtn.setFont(defFont);
+                fontOptionMenu.setFont(defFont);
+                fontSizeMenu.setFont(defFont);
+                textColorMenu.setFont(defFont);
+                bgColorMenu.setFont(defFont);
+                btnOutlineColorMenu.setFont(defFont);
+                resetBtn.setFont(defFont);
                 for (int i = 0; i < fontSizes.length; i++) {
-                    fontSizes[i].setFont(currFont);
+                    fontSizes[i].setFont(defFont);
                 }
                 for (int i = 0; i < textColors.length; i++) {
-                    textColors[i].setFont(currFont);
+                    textColors[i].setFont(defFont);
                 }
                 for (int i = 0; i < bgColors.length; i++) {
-                    bgColors[i].setFont(currFont);
+                    bgColors[i].setFont(defFont);
                 }
                 for (int i = 0; i < btnOutlineColors.length; i++) {
-                    btnOutlineColors[i].setFont(currFont);
+                    btnOutlineColors[i].setFont(defFont);
                 }
             }
         }
         for (int x = 0; x < fontSizes.length; x++) {
             if (e.getSource() == fontSizes[x]) {
-                currFont = new Font(currFont.getName(), Font.PLAIN, fontSizeArr[x]);
+                currFontSize = fontSizeArr[x];
+                currFont = new Font(currFont.getName(), Font.PLAIN, currFontSize);
                 textArea.setFont(currFont);
             }
         }
