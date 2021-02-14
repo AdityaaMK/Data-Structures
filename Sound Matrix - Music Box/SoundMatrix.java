@@ -37,7 +37,7 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
     String[] instrumentNames = { "Bell", "Piano" };
 
     public SoundMatrix() {
-        setSize(100, 800);
+        setSize(1000, 800);
         clipNames = new String[] { "C0", "B1", "ASharp1", "A1", "GSharp1", "G1", "FSharp1", "F1", "E1", "DSharp1", "D1",
                 "CSharp1", "C1", "B2", "ASharp2", "A2", "GSharp2", "G2", "FSharp2", "F2", "E2", "DSharp2", "D2",
                 "CSharp2", "C2", "B3", "ASharp3", "A3", "GSharp3", "G3", "FSharp3", "F3", "E3", "DSharp3", "D3",
@@ -77,10 +77,10 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
             }
         }
 
-        tempoBar = new JScrollBar(JScrollBar.HORIZONTAL, 200, 0, 50, 1000);
+        tempoBar = new JScrollBar(JScrollBar.HORIZONTAL, 200, 0, 50, 500);
         tempoBar.addAdjustmentListener(this);
         tempo = tempoBar.getValue();
-        tempoLabel = new JLabel("Tempo: " + tempo);
+        tempoLabel = new JLabel(String.format("%s%6s", "Tempo: ", tempo));
         tempoPanel = new JPanel(new BorderLayout());
         tempoPanel.add(tempoLabel, BorderLayout.WEST);
         tempoPanel.add(tempoBar, BorderLayout.CENTER);
@@ -109,13 +109,16 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
         menuBar.add(instrumentMenu);
 
         menuButtonPanel = new JPanel();
-        menuButtonPanel.setLayout(new GridLayout(1, 2));
+        menuButtonPanel.setLayout(new GridLayout());
+
         stopPlay = new JButton("Play");
         stopPlay.addActionListener(this);
         menuButtonPanel.add(stopPlay);
+
         clear = new JButton("Clear");
         clear.addActionListener(this);
         menuButtonPanel.add(clear);
+
         menuBar.add(menuButtonPanel, BorderLayout.EAST);
 
         buttonPane = new JScrollPane(buttonPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -167,7 +170,7 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
 
     public void adjustmentValueChanged(AdjustmentEvent e) {
         tempo = tempoBar.getValue();
-        tempoLabel.setText("Tempo: " + tempo);
+        tempoLabel.setText(String.format("%s%6s", "Tempo: ", tempo));
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -217,10 +220,13 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
                     button[r][c].setSelected(false);
                 }
             }
+            col = 0;
+            playing = false;
+            stopPlay.setText("Play");
         }
         for (int y = 0; y < instrumentItems.length; y++) {
             if (e.getSource() == instrumentItems[y]) {
-                String selectedInstrument = "\\" + instrumentNames[y] + "\\" + instrumentNames[y];
+                String selectedInstrument = instrumentNames[y] + "/" + instrumentNames[y];
                 try {
                     for (int x = 0; x < clipNames.length; x++) {
                         URL url = this.getClass().getClassLoader()
