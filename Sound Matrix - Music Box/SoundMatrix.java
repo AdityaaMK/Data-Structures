@@ -253,12 +253,7 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
     public void setNotes(Character[][] notes) {
         buttonPane.remove(buttonPanel);
 
-        for (int r = 0; r < button.length; r++) {
-
-            for (int c = 0; c < button[0].length; c++) {
-                buttonPanel.remove(button[r][c]);
-            }
-        }
+        buttonPanel = new JPanel();
         button = new JToggleButton[37][notes[0].length];
         buttonPanel.setLayout(new GridLayout(button.length, button[0].length));
         for (int r = 0; r < button.length; r++) {
@@ -306,25 +301,27 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
                 if (st.indexOf(".txt") >= 0)
                     st = st.substring(0, st.length() - 4);
                 String output = "";
-                String[] noteNames = { "  ", "c ", "b ", "a-", "a ", "g-", "g ", "f-", "f ", "e ", "d-", "d ", "c-" };
+                String[] noteNames = { "  ", "c ", "b ", "a-", "a ", "g-", "g ", "f-", "f ", "e ", "d-", "d ", "c-",
+                        "c ", "b ", "a-", "a ", "g-", "g ", "f-", "f ", "e ", "d-", "d ", "c-", "c ", "b ", "a-", "a ",
+                        "g-", "g ", "f-", "f ", "e ", "d-", "d ", "c-", "c " };
 
                 for (int r = 0; r < button.length + 1; r++) {
-                    output += noteNames[r];
                     if (r == 0) {
+                        output += tempo;
                         for (int x = 0; x < button[0].length; x++)
-                            output += x % 10;
+                            output += " ";
                     } else {
+                        output += noteNames[r];
                         for (int c = 0; c < button[0].length; c++) {
                             if (button[r - 1][c].isSelected())
-                                output += "X";
+                                output += "x";
                             else
                                 output += "-";
                         }
                     }
                     output += "\n";
                 }
-                BufferedWriter outputStream = null;
-                outputStream = new BufferedWriter(new FileWriter(st + ".txt"));
+                BufferedWriter outputStream = new BufferedWriter(new FileWriter(st + ".txt"));
                 outputStream.write(output);
                 outputStream.close();
             } catch (IOException exc) {
