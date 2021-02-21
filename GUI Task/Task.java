@@ -72,7 +72,7 @@ public class Task implements ActionListener {
 
         currFont = allFonts[0];
         for (int i = 0; i < fontSizeArr.length; i++) {
-            Font temp = new Font(currFont.getName(), Font.PLAIN, currFontSize);
+            Font temp = new Font(currFont.getName(), Font.PLAIN, fontSizeArr[i]);
             fontSizes[i] = new JMenuItem(fontSizeArr[i] + "");
             fontSizes[i].setFont(temp);
             fontSizes[i].addActionListener(this);
