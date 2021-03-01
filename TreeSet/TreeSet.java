@@ -133,7 +133,7 @@ public class TreeSet<E extends Comparable<E>> {
                 return;
             } else {
                 size--;
-                root = remove(root, value); // root is not the value, need to search in tree
+                root = remove(root, value); // root is not the value, need to search rest of tree
             }
         }
     }
