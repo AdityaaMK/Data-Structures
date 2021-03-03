@@ -167,7 +167,7 @@ public class TreeSet<E extends Comparable<E>> {
         rotateLeft(root);
     }
 
-    public void rotateLeft(TreeNode<E> oldRoot) {
+    public void rotateLeft(TreeNode<E> oldRoot) { // don't need overloaded method - could jus do in 1 method
         if (oldRoot != null && oldRoot.getRight() != null) {
             TreeNode<E> newRoot = oldRoot.getRight();
             oldRoot.setRight(newRoot.getLeft());
@@ -180,13 +180,43 @@ public class TreeSet<E extends Comparable<E>> {
         rotateRight(root);
     }
 
-    public void rotateRight(TreeNode<E> oldRoot) {
+    public void rotateRight(TreeNode<E> oldRoot) { // don't need overloaded method
         if (oldRoot != null && oldRoot.getLeft() != null) {
             TreeNode<E> newRoot = oldRoot.getLeft();
             oldRoot.setLeft(newRoot.getRight());
             newRoot.setRight(oldRoot);
             root = newRoot;
         }
+    }
+
+    public TreeSet<E> preOrderCopy() {
+        String temp = preOrder();
+        String[] parts = temp.substring(1, temp.length() - 1).split(", ");
+        TreeSet<E> preOrderCopy = new TreeSet<E>();
+        for (String x : parts) {
+            preOrderCopy.add((E) x);
+        }
+        return preOrderCopy;
+    }
+
+    public TreeSet<E> inOrderCopy() {
+        String temp = inOrder();
+        String[] parts = temp.substring(1, temp.length() - 1).split(", ");
+        TreeSet<E> inOrderCopy = new TreeSet<E>();
+        for (String x : parts) {
+            inOrderCopy.add((E) x);
+        }
+        return inOrderCopy;
+    }
+
+    public TreeSet<E> postOrderCopy() {
+        String temp = postOrder();
+        String[] parts = temp.substring(1, temp.length() - 1).split(", ");
+        TreeSet<E> postOrderCopy = new TreeSet<E>();
+        for (String x : parts) {
+            postOrderCopy.add((E) x);
+        }
+        return postOrderCopy;
     }
 
     public int size() {

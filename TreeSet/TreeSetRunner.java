@@ -26,34 +26,19 @@ public class TreeSetRunner {
         System.out.println("Original Set - InOrder: " + tree.inOrder());
         System.out.println("Original Set - PostOrder: " + tree.postOrder());
 
-        String temp = tree.preOrder();
-        String[] parts = temp.substring(1, temp.length() - 1).split(", ");
-        TreeSet<Character> preOrderCopy = new TreeSet<>();
-        for (String x : parts) {
-            preOrderCopy.add(x.charAt(0));
-        }
+        TreeSet<Character> preOrderCopy = tree.preOrderCopy();
         System.out.println("-------------------------------------------------------------");
         System.out.println("PreOrder Copy - PreOrder: " + preOrderCopy.preOrder());
         System.out.println("PreOrder Copy - InOrder: " + preOrderCopy.inOrder());
         System.out.println("PreOrder Copy - PostOrder: " + preOrderCopy.postOrder());
 
-        temp = tree.inOrder();
-        parts = temp.substring(1, temp.length() - 1).split(", ");
-        TreeSet<Character> inOrderCopy = new TreeSet<>();
-        for (String x : parts) {
-            inOrderCopy.add(x.charAt(0));
-        }
+        TreeSet<Character> inOrderCopy = tree.inOrderCopy();
         System.out.println("-------------------------------------------------------------");
         System.out.println("InOrder Copy - PreOrder: " + inOrderCopy.preOrder());
         System.out.println("InOrder Copy - InOrder: " + inOrderCopy.inOrder());
         System.out.println("InOrder Copy - PostOrder: " + inOrderCopy.postOrder());
 
-        temp = tree.postOrder();
-        parts = temp.substring(1, temp.length() - 1).split(", ");
-        TreeSet<Character> postOrderCopy = new TreeSet<>();
-        for (String x : parts) {
-            postOrderCopy.add(x.charAt(0));
-        }
+        TreeSet<Character> postOrderCopy = tree.inOrderCopy();
         System.out.println("-------------------------------------------------------------");
         System.out.println("PostOrder Copy - PreOrder: " + postOrderCopy.preOrder());
         System.out.println("PostOrder Copy - InOrder: " + postOrderCopy.inOrder());
@@ -65,26 +50,36 @@ public class TreeSetRunner {
         System.out.println("Original Set - PreOrder: " + tree.preOrder());
         System.out.println("Original Set - InOrder: " + tree.inOrder());
         System.out.println("Original Set - PostOrder: " + tree.postOrder());
+
+        System.out.println("-------------------------------------------------------------");
         System.out.println("Rotate Right 2");
         tree.rotateRight();
         System.out.println("Original Set - PreOrder: " + tree.preOrder());
         System.out.println("Original Set - InOrder: " + tree.inOrder());
         System.out.println("Original Set - PostOrder: " + tree.postOrder());
+
+        System.out.println("-------------------------------------------------------------");
         System.out.println("Rotate Right 3");
         tree.rotateRight();
         System.out.println("Original Set - PreOrder: " + tree.preOrder());
         System.out.println("Original Set - InOrder: " + tree.inOrder());
         System.out.println("Original Set - PostOrder: " + tree.postOrder());
+
+        System.out.println("-------------------------------------------------------------");
         System.out.println("Rotate Left 1");
         tree.rotateLeft();
         System.out.println("Original Set - PreOrder: " + tree.preOrder());
         System.out.println("Original Set - InOrder: " + tree.inOrder());
         System.out.println("Original Set - PostOrder: " + tree.postOrder());
+
+        System.out.println("-------------------------------------------------------------");
         System.out.println("Rotate Left 2");
         tree.rotateLeft();
         System.out.println("Original Set - PreOrder: " + tree.preOrder());
         System.out.println("Original Set - InOrder: " + tree.inOrder());
         System.out.println("Original Set - PostOrder: " + tree.postOrder());
+
+        System.out.println("-------------------------------------------------------------");
         System.out.println("Rotate Left 3");
         tree.rotateLeft();
         System.out.println("Original Set - PreOrder: " + tree.preOrder());
