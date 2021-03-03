@@ -163,6 +163,32 @@ public class TreeSet<E extends Comparable<E>> {
         return root;
     }
 
+    public void rotateLeft() {
+        rotateLeft(root);
+    }
+
+    public void rotateLeft(TreeNode<E> oldRoot) {
+        if (oldRoot != null && oldRoot.getRight() != null) {
+            TreeNode<E> newRoot = oldRoot.getRight();
+            oldRoot.setRight(newRoot.getLeft());
+            newRoot.setLeft(oldRoot);
+            root = newRoot;
+        }
+    }
+
+    public void rotateRight() {
+        rotateRight(root);
+    }
+
+    public void rotateRight(TreeNode<E> oldRoot) {
+        if (oldRoot != null && oldRoot.getLeft() != null) {
+            TreeNode<E> newRoot = oldRoot.getLeft();
+            oldRoot.setLeft(newRoot.getRight());
+            newRoot.setRight(oldRoot);
+            root = newRoot;
+        }
+    }
+
     public int size() {
         return size;
     }
