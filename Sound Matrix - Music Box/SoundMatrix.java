@@ -18,14 +18,14 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
     JScrollPane buttonPane;
     JScrollBar tempoBar;
     JMenuBar menuBar;
-    JMenu file, instrumentMenu;
-    JMenuItem save, load;
+    JMenu file, instrumentMenu, adjustColumns;
+    JMenuItem save, load, addColumn, removeColumn, add20Columns, remove20Columns;
     JMenuItem[] instrumentItems;
     JButton stopPlay, clear;
     JFileChooser fileChooser;
     JLabel[] labels = new JLabel[button.length];
     JPanel buttonPanel, labelPanel, tempoPanel, menuButtonPanel;
-    JLabel tempoLabel;
+    JLabel tempoLabel, currentInstrument;
     boolean notStopped = true;
     JFrame frame = new JFrame();
     String[] clipNames;
@@ -98,15 +98,33 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
         save.addActionListener(this);
         load.addActionListener(this);
 
-        instrumentMenu = new JMenu("instruments");
+        instrumentMenu = new JMenu("Instruments");
         instrumentItems = new JMenuItem[instrumentNames.length];
         for (int x = 0; x < instrumentNames.length; x++) {
             instrumentItems[x] = new JMenuItem(instrumentNames[x]);
             instrumentItems[x].addActionListener(this);
             instrumentMenu.add(instrumentItems[x]);
         }
+        currentInstrument = new JLabel("Current Instrument: " + instrumentNames[0]);
+
+        adjustColumns = new JMenu("Adjust Columns");
+        addColumn = new JMenuItem("Add Column");
+        addColumn.addActionListener(this);
+        removeColumn = new JMenuItem("Remove Column");
+        removeColumn.addActionListener(this);
+        add20Columns = new JMenuItem("Add 20 Columns");
+        add20Columns.addActionListener(this);
+        remove20Columns = new JMenuItem("Remove 20 Columns");
+        remove20Columns.addActionListener(this);
+        adjustColumns.add(addColumn);
+        adjustColumns.add(removeColumn);
+        adjustColumns.add(add20Columns);
+        adjustColumns.add(remove20Columns);
+
         menuBar.add(file);
         menuBar.add(instrumentMenu);
+        menuBar.add(currentInstrument);
+        menuBar.add(adjustColumns);
 
         menuButtonPanel = new JPanel();
         menuButtonPanel.setLayout(new GridLayout());
@@ -174,15 +192,36 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == stopPlay) {
+        if (e.getSource() == addColumn) {
+            resizeButtons(1);
+            playing = false;
+            stopPlay.setText("Play");
+        } else if (e.getSource() == add20Columns) {
+            resizeButtons(20);
+            playing = false;
+            stopPlay.setText("Play");
+        } else if (e.getSource() == removeColumn) {
+            if (button[0].length - 1 > 0) {
+                resizeButtons(-1);
+                playing = false;
+                col = button[0].length - 1;
+                stopPlay.setText("Play");
+            }
+        } else if (e.getSource() == remove20Columns) {
+            if (button[0].length - 20 > 0) {
+                resizeButtons(-20);
+                playing = false;
+                col = button[0].length - 20;
+                stopPlay.setText("Play");
+            }
+        } else if (e.getSource() == stopPlay) {
             playing = !playing;
             if (!playing)
                 stopPlay.setText("Play");
             else
                 stopPlay.setText("Stop");
 
-        }
-        if (e.getSource() == load) {
+        } else if (e.getSource() == load) {
             int returnVal = fileChooser.showOpenDialog(this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 try {
@@ -209,11 +248,9 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
                 playing = false;
                 stopPlay.setText("Play");
             }
-        }
-        if (e.getSource() == save) {
+        } else if (e.getSource() == save) {
             saveSong();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             for (int r = 0; r < button.length; r++) {
 
                 for (int c = 0; c < button[0].length; c++) {
@@ -226,6 +263,7 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
         }
         for (int y = 0; y < instrumentItems.length; y++) {
             if (e.getSource() == instrumentItems[y]) {
+                currentInstrument.setText("Instrument: " + instrumentNames[y]);
                 String selectedInstrument = instrumentNames[y] + "/" + instrumentNames[y];
                 try {
                     for (int x = 0; x < clipNames.length; x++) {
@@ -248,6 +286,49 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
             }
         }
 
+    }
+
+    public void resizeButtons(int change) {
+        JToggleButton[][] temp = new JToggleButton[button.length][button[0].length + change];
+        for (int r = 0; r < temp.length; r++) {
+            for (int c = 0; c < temp[0].length; c++) {
+                temp[r][c] = new JToggleButton();
+                try {
+                    if (button[r][c].isSelected())
+                        temp[r][c].setSelected(true);
+                    else
+                        temp[r][c].setSelected(false);
+                } catch (ArrayIndexOutOfBoundsException e) {
+
+                }
+            }
+        }
+        buttonPane.remove(buttonPanel);
+        buttonPanel = new JPanel();
+        button = new JToggleButton[temp.length][temp[0].length];
+        buttonPanel.setLayout(new GridLayout(button.length, button[0].length, 2, 5));
+        for (int r = 0; r < temp.length; r++) {
+            String name = clipNames[r].replaceAll("Sharp", "#");
+            for (int c = 0; c < button[0].length; c++) {
+                button[r][c] = new JToggleButton();
+                button[r][c].setFont(font);
+                button[r][c].setText(name);
+                button[r][c].setPreferredSize(new Dimension(30, 30));
+                button[r][c].setMargin(new Insets(0, 0, 0, 0));
+                buttonPanel.add(button[r][c]);
+            }
+        }
+        this.remove(buttonPane);
+        buttonPane = new JScrollPane(buttonPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        this.add(buttonPane, BorderLayout.CENTER);
+        for (int r = 0; r < temp.length; r++) {
+            for (int c = 0; c < temp[0].length; c++) {
+                if (temp[r][c].isSelected())
+                    button[r][c].setSelected(true);
+            }
+        }
+        this.revalidate();
     }
 
     public void setNotes(Character[][] notes) {
