@@ -8,6 +8,7 @@ import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.util.Random;
 
 public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener, ActionListener {
     /**
@@ -21,7 +22,7 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
     JMenu file, instrumentMenu, adjustColumns;
     JMenuItem save, load, addColumn, removeColumn, add20Columns, remove20Columns;
     JMenuItem[] instrumentItems;
-    JButton stopPlay, clear;
+    JButton stopPlay, clear, random;
     JFileChooser fileChooser;
     JLabel[] labels = new JLabel[button.length];
     JPanel buttonPanel, labelPanel, tempoPanel, menuButtonPanel;
@@ -136,6 +137,10 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
         clear = new JButton("Clear");
         clear.addActionListener(this);
         menuButtonPanel.add(clear);
+
+        random = new JButton("Random");
+        random.addActionListener(this);
+        menuButtonPanel.add(random);
 
         menuBar.add(menuButtonPanel, BorderLayout.EAST);
 
@@ -255,6 +260,16 @@ public class SoundMatrix extends JFrame implements Runnable, AdjustmentListener,
 
                 for (int c = 0; c < button[0].length; c++) {
                     button[r][c].setSelected(false);
+                }
+            }
+            col = 0;
+            playing = false;
+            stopPlay.setText("Play");
+        } else if (e.getSource() == random) {
+            for (int r = 0; r < button.length; r++) {
+                for (int c = 0; c < button[0].length / 5; c++) {
+                    int randCol = (int) (Math.random() * button[0].length);
+                    button[r][randCol].setSelected(true);
                 }
             }
             col = 0;
