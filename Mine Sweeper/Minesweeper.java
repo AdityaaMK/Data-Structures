@@ -97,6 +97,36 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
         }
     }
 
+    public void mouseReleased(MouseEvent e) {
+        int row = (int) ((JToggleButton) e.getComponent()).getClientProperty("row");
+        int col = (int) ((JToggleButton) e.getComponent()).getClientProperty("column");
+
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            board[row][col].setBackground(Color.LIGHT_GRAY);
+            board[row][col].setOpaque(true);
+            if (firstClick) {
+                setMinesAndCounts(row, col);
+                firstClick = false;
+            }
+            if ((int) board[row][col].getClientProperty("state") == -1) {
+                for (int r = 0; r < board.length; r++) {
+                    for (int c = 0; c < board[0].length; c++) {
+                        if ((int) board[r][c].getClientProperty("state") == -1) {
+                            board[r][c].setIcon(mineIcon);
+                        }
+                    }
+                }
+                JOptionPane.showMessageDialog(null, "You are a loser!");
+                // show all of the mines
+                // stop the user from having the ability to click on buttons until they reset
+                // the game
+            } else {
+                expand(row, col);
+                checkWin();
+            }
+        }
+    }
+
     public void setMinesAndCounts(int currRow, int currCol) {
         int count = numMines;
         int dimR = board.length;
@@ -139,36 +169,6 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
         // board[r][c].setText("" + state);
         // }
         // }
-    }
-
-    public void mouseReleased(MouseEvent e) {
-        int row = (int) ((JToggleButton) e.getComponent()).getClientProperty("row");
-        int col = (int) ((JToggleButton) e.getComponent()).getClientProperty("column");
-
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            board[row][col].setBackground(Color.LIGHT_GRAY);
-            board[row][col].setOpaque(true);
-            if (firstClick) {
-                setMinesAndCounts(row, col);
-                firstClick = false;
-            }
-            if ((int) board[row][col].getClientProperty("state") == -1) {
-                for (int r = 0; r < board.length; r++) {
-                    for (int c = 0; c < board[0].length; c++) {
-                        if ((int) board[r][c].getClientProperty("state") == -1) {
-                            board[r][c].setIcon(mineIcon);
-                        }
-                    }
-                }
-                JOptionPane.showMessageDialog(null, "You are a loser!");
-                // show all of the mines
-                // stop the user from having the ability to click on buttons until they reset
-                // the game
-            } else {
-                expand(row, col);
-                checkWin();
-            }
-        }
     }
 
     public void expand(int row, int col) {
