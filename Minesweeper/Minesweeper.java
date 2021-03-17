@@ -12,7 +12,7 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
     boolean firstClick = true, gameOn = true;
     int numMines = 10;
     ImageIcon[] numbers;
-    ImageIcon mineIcon, flag;
+    ImageIcon mineIcon, flag, win, lose, playing, start;
     GraphicsEnvironment ge;
     Font mineFont, timeFont;
     Timer timer;
@@ -48,6 +48,18 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
         flag = new ImageIcon("flag.png");
         flag = new ImageIcon(flag.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
 
+        win = new ImageIcon("win0.png");
+        win = new ImageIcon(win.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+
+        lose = new ImageIcon("lose0.png");
+        lose = new ImageIcon(lose.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+
+        playing = new ImageIcon("wait0.png");
+        playing = new ImageIcon(playing.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+
+        start = new ImageIcon("smile0.png");
+        start = new ImageIcon(start.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+
         numbers = new ImageIcon[8];
         for (int x = 0; x < 8; x++) {
             numbers[x] = new ImageIcon((x + 1) + ".png");
@@ -61,7 +73,7 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
     }
 
     public void createBoard(int row, int col) {
-        timeField = new JTextField();
+        timeField = new JTextField("0");
         timeField.setFont(timeFont.deriveFont(25f));
         timeField.setHorizontalAlignment(JTextField.CENTER);
         timeField.setBackground(Color.BLACK);
@@ -74,6 +86,7 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
         expert.addActionListener(this);
         reset = new JButton("reset");
         reset.addActionListener(this);
+        reset.setIcon(start);
         menu = new JMenu("difficulty menu");
         menuBar = new JMenuBar();
         menuBar.setLayout(new GridLayout());
@@ -158,6 +171,8 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
                 timer.schedule(new UpdateTimer(), 0, 1000);
                 setMinesAndCounts(row, col);
                 firstClick = false;
+                gameOn = true;
+                reset.setIcon(playing);
             }
             if ((int) board[row][col].getClientProperty("state") == -1) {
                 // board[row][col].setContentAreaFilled(false);
@@ -165,6 +180,8 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
                 // board[row][col].setBackground(Color.RED);
                 revealMines();
                 timer.cancel();
+                reset.setIcon(lose);
+                gameOn = false;
                 // JOptionPane.showMessageDialog(null, "You are a loser!");
                 // show all of the mines
                 // stop the user from having the ability to click on buttons until they reset
@@ -288,6 +305,7 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
 
         if (numMines == totalSpaces - count) {
             timer.cancel();
+            reset.setIcon(win);
             // JOptionPane.showMessageDialog(null, "How Cool are you");
         }
     }
@@ -306,6 +324,14 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
             row = 16;
             column = 40;
             createBoard(row, column);
+        } else if (e.getSource() == reset) {
+            createBoard(row, column);
+            timer.cancel();
+            timeField.setText("0");
+            timePassed = 0;
+            firstClick = true;
+            gameOn = false;
+            reset.setIcon(start);
         }
     }
 
@@ -328,9 +354,11 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
 
     class UpdateTimer extends TimerTask {
         public void run() {
-            timePassed++;
-            timeField.setText(timePassed + "");
-            System.out.println(timePassed);
+            if (gameOn) {
+                timePassed++;
+                timeField.setText(timePassed + "");
+                System.out.println(timePassed);
+            }
         }
     }
 }
