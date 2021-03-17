@@ -2,42 +2,88 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Minesweeper extends JFrame implements ActionListener, MouseListener {
 
     JToggleButton[][] board;
     JPanel boardPanel;
-    boolean firstClick;
-    int numMines;
-
-    ImageIcon mineIcon;
+    boolean firstClick = true, gameOn = true;
+    int numMines = 10;
+    ImageIcon[] numbers;
+    ImageIcon mineIcon, flag;
     GraphicsEnvironment ge;
-    Font mineFont;
+    Font mineFont, timeFont;
+    Timer timer;
+    int timePassed;
+    JTextField timeField;
+    JMenuBar menuBar;
+    JMenu menu;
+    JMenuItem beginner, inter, expert;
+    JButton reset;
+    int row = 9, column = 9;
 
     public Minesweeper() {
-        firstClick = true;
-        numMines = 40;
+        // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        // UIManager.put("ToggleButton.select", new Color(255, 140, 0));
+        // does not work
 
         try {
             ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             mineFont = Font.createFont(Font.TRUETYPE_FONT, new File("mine-sweeper.ttf"));
+            timeFont = Font.createFont(Font.TRUETYPE_FONT, new File("digital-7.ttf"));
             ge.registerFont(mineFont);
+            ge.registerFont(timeFont);
         } catch (IOException | FontFormatException e) {
 
         }
 
         System.out.println(mineFont); // to check if font shows up
+        System.out.println(timeFont); // to check if font shows up
 
         mineIcon = new ImageIcon("mine.png");
         mineIcon = new ImageIcon(mineIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
 
-        createBoard(10, 20);
+        flag = new ImageIcon("flag.png");
+        flag = new ImageIcon(flag.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+
+        numbers = new ImageIcon[8];
+        for (int x = 0; x < 8; x++) {
+            numbers[x] = new ImageIcon((x + 1) + ".png");
+            numbers[x] = new ImageIcon(numbers[x].getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+        }
+
+        createBoard(row, column);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
     }
 
     public void createBoard(int row, int col) {
+        timeField = new JTextField();
+        timeField.setFont(timeFont.deriveFont(25f));
+        timeField.setHorizontalAlignment(JTextField.CENTER);
+        timeField.setBackground(Color.BLACK);
+        timeField.setForeground(Color.WHITE);
+        beginner = new JMenuItem("beginner");
+        beginner.addActionListener(this);
+        inter = new JMenuItem("intermediate");
+        inter.addActionListener(this);
+        expert = new JMenuItem("expert");
+        expert.addActionListener(this);
+        reset = new JButton("reset");
+        reset.addActionListener(this);
+        menu = new JMenu("difficulty menu");
+        menuBar = new JMenuBar();
+        menuBar.setLayout(new GridLayout());
+        menu.add(beginner);
+        menu.add(inter);
+        menu.add(expert);
+        menuBar.add(menu);
+        menuBar.add(reset);
+        menuBar.add(timeField);
+
         if (boardPanel != null)
             this.remove(boardPanel);
         boardPanel = new JPanel();
@@ -59,41 +105,44 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
         }
         // set size is width by height
         this.setSize(40 * col, 40 * row);
+        this.setJMenuBar(menuBar);
         this.add(boardPanel);
         this.revalidate();
     }
 
     public void write(int row, int col, int state) {
-        Color color;
-        switch (state) {
-        case 1:
-            color = Color.BLUE;
-            break;
-        case 2:
-            color = Color.GREEN;
-            break;
-        case 3:
-            color = Color.RED;
-            break;
-        case 4:
-            color = new Color(128, 0, 128);
-            break;
-        case 5:
-            color = new Color(0, 128, 0);
-            break;
-        case 6:
-            color = Color.MAGENTA;
-            break;
-        case 7:
-            color = Color.CYAN;
-            break;
-        default:
-            color = Color.ORANGE;
-            break;
-        }
+        // Color color;
+        // switch (state) {
+        // case 1:
+        // color = Color.BLUE;
+        // break;
+        // case 2:
+        // color = Color.GREEN;
+        // break;
+        // case 3:
+        // color = Color.RED;
+        // break;
+        // case 4:
+        // color = new Color(128, 0, 128);
+        // break;
+        // case 5:
+        // color = new Color(0, 128, 0);
+        // break;
+        // case 6:
+        // color = Color.MAGENTA;
+        // break;
+        // case 7:
+        // color = Color.CYAN;
+        // break;
+        // default:
+        // color = Color.ORANGE;
+        // break;
+        // }
         if (state > 0) {
-            board[row][col].setForeground(color);
-            board[row][col].setText("" + state);
+            // board[row][col].setForeground(color);
+            // board[row][col].setText("" + state);
+            board[row][col].setIcon(numbers[state - 1]);
+            board[row][col].setDisabledIcon(numbers[state - 1]);
         }
     }
 
@@ -101,28 +150,57 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
         int row = (int) ((JToggleButton) e.getComponent()).getClientProperty("row");
         int col = (int) ((JToggleButton) e.getComponent()).getClientProperty("column");
 
-        if (e.getButton() == MouseEvent.BUTTON1) {
+        if (e.getButton() == MouseEvent.BUTTON1 && board[row][col].isEnabled()) {
             board[row][col].setBackground(Color.LIGHT_GRAY);
             board[row][col].setOpaque(true);
             if (firstClick) {
+                timer = new Timer();
+                timer.schedule(new UpdateTimer(), 0, 1000);
                 setMinesAndCounts(row, col);
                 firstClick = false;
             }
             if ((int) board[row][col].getClientProperty("state") == -1) {
-                for (int r = 0; r < board.length; r++) {
-                    for (int c = 0; c < board[0].length; c++) {
-                        if ((int) board[r][c].getClientProperty("state") == -1) {
-                            board[r][c].setIcon(mineIcon);
-                        }
-                    }
-                }
-                JOptionPane.showMessageDialog(null, "You are a loser!");
+                // board[row][col].setContentAreaFilled(false);
+                // board[row][col].setOpaque(true);
+                // board[row][col].setBackground(Color.RED);
+                revealMines();
+                timer.cancel();
+                // JOptionPane.showMessageDialog(null, "You are a loser!");
                 // show all of the mines
                 // stop the user from having the ability to click on buttons until they reset
                 // the game
             } else {
                 expand(row, col);
                 checkWin();
+            }
+        }
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            if (!board[row][col].isSelected() && !firstClick) {
+                if (board[row][col].getIcon() == null) {
+                    board[row][col].setIcon(flag);
+                    board[row][col].setDisabledIcon(flag);
+                    board[row][col].setEnabled(false);
+                } else {
+                    board[row][col].setIcon(null);
+                    board[row][col].setDisabledIcon(null);
+                    board[row][col].setEnabled(true);
+                }
+            }
+        }
+    }
+
+    public void revealMines() {
+        for (int r = 0; r < board.length; r++) {
+            for (int c = 0; c < board[0].length; c++) {
+                if ((int) board[r][c].getClientProperty("state") == -1) {
+                    board[r][c].setIcon(mineIcon);
+                    board[r][c].setDisabledIcon(mineIcon);
+                    board[r][c].setSelected(true);
+                    // board[r][c].setContentAreaFilled(false);
+                    board[r][c].setOpaque(true);
+                    board[r][c].setBackground(Color.RED);
+                }
+                board[r][c].setEnabled(false);
             }
         }
     }
@@ -208,12 +286,27 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
             }
         }
 
-        if (numMines == totalSpaces - count)
-            JOptionPane.showMessageDialog(null, "How Cool are you");
+        if (numMines == totalSpaces - count) {
+            timer.cancel();
+            // JOptionPane.showMessageDialog(null, "How Cool are you");
+        }
     }
 
     public void actionPerformed(ActionEvent e) {
-
+        if (e.getSource() == beginner) {
+            numMines = 10;
+            row = column = 9;
+            createBoard(row, column);
+        } else if (e.getSource() == inter) {
+            numMines = 40;
+            row = column = 16;
+            createBoard(row, column);
+        } else if (e.getSource() == expert) {
+            numMines = 99;
+            row = 16;
+            column = 40;
+            createBoard(row, column);
+        }
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -231,5 +324,13 @@ public class Minesweeper extends JFrame implements ActionListener, MouseListener
     public static void main(String[] args) {
         new Minesweeper();
 
+    }
+
+    class UpdateTimer extends TimerTask {
+        public void run() {
+            timePassed++;
+            timeField.setText(timePassed + "");
+            System.out.println(timePassed);
+        }
     }
 }
